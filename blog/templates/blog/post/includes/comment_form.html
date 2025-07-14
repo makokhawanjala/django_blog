@@ -1,0 +1,12 @@
+<div class="card shadow-sm mt-4">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Add a Comment</h5>
+    </div>
+    <div class="card-body">
+        <form method="post" action="{% url 'blog:post_comment' post.id %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Submit Comment</button>
+        </form>
+    </div>
+</div>
