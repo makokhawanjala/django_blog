@@ -42,6 +42,22 @@
     </div>
   </div>
 
+  <!-- Similar Posts Section -->
+  <div class="mt-5">
+    <h3 class="fw-bold mb-3">You may also like</h3>
+    <ul class="list-group list-group-flush">
+      {% for similar in similar_posts %}
+        <li class="list-group-item px-0">
+          <a href="{{ similar.get_absolute_url }}" class="text-decoration-none">
+            {{ similar.title }}
+          </a>
+        </li>
+      {% empty %}
+        <li class="list-group-item text-muted">There are no similar posts available.</li>
+      {% endfor %}
+    </ul>
+  </div>
+
   <!-- Comments Section -->
   <div class="mt-5">
     {% with comments.count as total_comments %}
@@ -65,6 +81,7 @@
       {% include "blog/post/includes/comment_form.html" %}
     </div>
   </div>
+
 
   <!-- Back Button -->
   <div class="mt-4">

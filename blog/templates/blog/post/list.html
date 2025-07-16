@@ -3,12 +3,31 @@
 
 {% block content %}
   <h1 class="mb-4">Latest Posts</h1>
+  {% if tag %}
+    <h2 class="mb-3">Posts tagged with <span class="text-primary">"{{ tag.name }}"</span></h2>
+  {% endif %}
 
   {% for post in posts %}
     <div class="mb-5 p-4 bg-white shadow-sm rounded">
       <h2 class="mb-2">
         <a href="{{ post.get_absolute_url }}" class="text-decoration-none text-primary">{{ post.title }}</a>
       </h2>
+
+      <p class="mb-2 fw-bold">
+        Tags:
+        {% if post.tags.all %}
+          {% for tag in post.tags.all %}
+            <a href="{% url 'blog:post_list_by_tag' tag.slug %}" class="badge bg-secondary text-decoration-none">
+              {{ tag.name }}
+            </a>{% if not forloop.last %}, {% endif %}
+          {% endfor %}
+        {% else %}
+          <span class="text-muted">No tags</span>
+        {% endif %}
+      </p>
+
+
+
       <p class="text-muted">
         Published {{ post.publish|date:"F j, Y, g:i a" }} by <strong>{{ post.author }}</strong>
       </p>

@@ -1,4 +1,6 @@
+{% load blog_tags %}
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,12 +33,15 @@
   <main class="flex-grow-1">
     <div class="container">
         <div class="row">
+            <!-- Main content column (left) -->
             <div class="col-md-8">
                 {% block content %}
                 {% endblock %}
             </div>
 
+            <!-- Sidebar column (right) -->
             <div class="col-md-4">
+                <!-- About This Blog section -->
                 <div class="p-4 mb-4 bg-white border rounded shadow-sm">
                     <h4 class="fw-bold text-primary mb-3">👨‍💻 About This Blog</h4>
                     <p class="mb-2">Hi there! I'm <strong>Amos Makokha</strong>, and this is my personal programming blog where I:</p>
@@ -46,9 +51,15 @@
                         <li class="mb-1"><i class="bi bi-tools text-success"></i> Explore tools, libraries & updates</li>
                         <li class="mb-1"><i class="bi bi-journal-text text-info"></i> Publish personal dev notes</li>
                     </ul>
+                    <p class="mb-0">I've been coding since 2018, and this blog is my way of sharing real programming experiences. I've written {% total_posts %} posts so far. </p>   
+                </div>
+                
+                <!-- Latest Posts section -->
+                <div class="p-4 mb-4 bg-white border rounded shadow-sm">
+                    <h4 class="fw-bold text-primary mb-3">📰 Latest Posts</h4>
+                    {% show_latest_posts %}
                 </div>
             </div>
-
         </div>
     </div>
   </main>
