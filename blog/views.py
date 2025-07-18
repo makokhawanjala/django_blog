@@ -3,11 +3,12 @@ from django.shortcuts import get_object_or_404, render
 from django.views.decorators.http import require_POST
 from .models import Post, Comment
 from django.http import Http404
-from .forms import CommentForm
+from .forms import CommentForm, SearchForm
 from django.views.generic import ListView
 from taggit.models import Tag
 from django.db.models import Count
-from django.conf import settings
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
+
 
 class PostListView(ListView):
     queryset = Post.published.all()
@@ -38,7 +39,7 @@ def post_list(request, tag_slug=None):
         # If page is out of range (e.g. 9999), deliver last page of results.
         posts = paginator.page(paginator.num_pages)
     return render(request, 'blog/post/list.html', {'posts': posts, 'page': page_number, 'tag': tag}) 
-
+    return render(request, 'blog/post/list.html', {'posts': posts, 'page': posts, 'tag': tag}) 
 def post_detail(request, year, month, day, post):
     post = get_object_or_404(
         Post,
@@ -78,3 +79,19 @@ def post_comment(request, post_id):
         form = CommentForm()
     
     return render(request, 'blog/post/comment.html', {'post': post, 'form': form, 'comment': comment})
+
+def post_search(request):
+    form = SearchForm()
+    query = None
+    results = []
+    if 'query' in request.GET:
+        form = SearchForm(request.GET)
+        if form.is_valid():
+            query = form.cleaned_data['query']
+            # Use PostgreSQL full-text search
+            search_vector = SearchVector('title', 'body')
+            search_query = SearchQuery(query)
+            results = Post.published.annotate(
+                search=search_vector, rank=SearchRank(search_vector, search_query)
+            ).filter(search=search_query).order_by('-rank')
+    return render(request, 'blog/post/search.html', {'form': form, 'query': query, 'results': results})

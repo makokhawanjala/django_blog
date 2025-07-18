@@ -1,0 +1,79 @@
+{% extends "blog/base.html" %}
+{% load blog_tags %}
+{% block title %}Search Results{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    {% if query %}
+        <div class="text-center mb-4">
+            <h1 class="display-4 fw-bold">Search Results for "{{ query }}"</h1>
+            <p class="lead text-muted">
+                {% with results.count as total_results %}
+                    Found {{ total_results }} result{{ total_results|pluralize }}
+                {% endwith %}
+            </p>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                {% for post in results %}
+                    <div class="card mb-3 shadow-sm border-0">
+                        <div class="card-body">
+                            <h4 class="card-title mb-3">
+                                <a href="{{ post.get_absolute_url }}" class="text-decoration-none text-dark fw-semibold">{{ post.title }}</a>
+                            </h4>
+                            <div class="card-text text-muted">
+                                {{ post.body|markdown|truncatewords_html:12 }}
+                            </div>
+                            <a href="{{ post.get_absolute_url }}" class="btn btn-outline-primary btn-sm mt-2">Read More</a>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="alert alert-info text-center" role="alert">
+                        <h4 class="alert-heading">No Results Found</h4>
+                        <p>No posts found for "{{ query }}". Try a different search term.</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{% url 'blog:post_search' %}" class="btn btn-primary">Search Again</a>
+        </div>
+    {% else %}
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <h1 class="card-title text-center mb-4 fw-bold">Search Posts</h1>
+                        <form method="get" class="d-flex flex-column gap-3">
+                            {{ form.as_p }}
+                            <button type="submit" class="btn btn-primary w-100">Search</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+body {
+    background-color: #f8f9fa;
+}
+.card {
+    transition: transform 0.2s;
+}
+.card:hover {
+    transform: translateY(-5px);
+}
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+</style>
+{% endblock %}

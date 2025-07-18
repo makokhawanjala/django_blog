@@ -36,7 +36,10 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.sites',
+    'django.contrib.sitemaps',
     'django.contrib.staticfiles',
+    'django.contrib.postgres',
     'taggit',  # taggit for tagging functionality
     'blog',  # blog app
     
@@ -76,12 +79,31 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+"""
+This is the default SQLite database configuration.
+You can change it to use PostgreSQL or another database as
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+"""
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'myblogdb',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres4075.',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
+
+
 
 
 # Password validation
@@ -124,4 +146,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-CSRF_TRUSTED_ORIGINS = ['https://5a01aa3df232.ngrok-free.app']
+CSRF_TRUSTED_ORIGINS = ['https://87303e1d64d6.ngrok-free.app']
+# Site ID for django.contrib.sites
+SITE_ID = 1

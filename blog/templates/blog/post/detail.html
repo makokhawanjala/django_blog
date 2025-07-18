@@ -1,4 +1,5 @@
 {% extends "blog/base.html" %}
+{% load blog_tags %}
 
 {% block title %}{{ post.title }}{% endblock %}
 
@@ -17,7 +18,7 @@
 
   <!-- Post Body -->
   <div class="mt-4 mb-5">
-    {{ post.body|linebreaks }}
+    {{ post.body|markdown }}
   </div>
 
   <!-- Share Section -->
