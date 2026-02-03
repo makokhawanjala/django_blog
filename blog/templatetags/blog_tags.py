@@ -19,3 +19,5 @@ def show_latest_posts(count=5):
 def markdown_format(text):
     """Converts Markdown text to HTML."""
     return mark_safe(markdown.markdown(text))
+
+
