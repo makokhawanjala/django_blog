@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+from pathlib import Path
+from decouple import config, Csv
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,11 +24,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-hu3l#rk-m8$*mdyp^c97ladw-=l(-+bb4=8$z%n)y0g6$@c)p&'
+#SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+#DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = ['*']
+#ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv())
 
 
 # Application definition
@@ -98,7 +104,7 @@ DATABASES = {
         'NAME': 'myblogdb',
         'USER': 'postgres',
         'PASSWORD': 'postgres4075.',
-        'HOST': 'localhost',
+        'HOST': '172.25.150.153',
         'PORT': '5432',
     }
 }
@@ -146,6 +152,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-CSRF_TRUSTED_ORIGINS = ['https://87303e1d64d6.ngrok-free.app']
+CSRF_TRUSTED_ORIGINS = ['https://clients-sorry-until-law.trycloudflare.com']
 # Site ID for django.contrib.sites
 SITE_ID = 1
