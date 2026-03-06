@@ -1,11 +1,9 @@
 <ul>
 {% for post in latest_posts %}
-  <li class="list-group-item px-0">
-    <a href="{{ post.get_absolute_url }}" class="text-decoration-none">
-      {{ post.title }}
-    </a>
+  <li>
+    <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
   </li>
 {% empty %}
-  <li class="list-group-item text-muted">No recent posts available.</li>
+  <li style="color:#9ca3af; font-size:0.85rem;">No recent posts yet.</li>
 {% endfor %}
 </ul>

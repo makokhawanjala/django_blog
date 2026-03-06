@@ -1,79 +1,47 @@
 {% extends "blog/base.html" %}
 {% load blog_tags %}
-{% block title %}Search Results{% endblock %}
+{% block title %}Search — Amos Makokha{% endblock %}
 
 {% block content %}
-<div class="container my-5">
-    {% if query %}
-        <div class="text-center mb-4">
-            <h1 class="display-4 fw-bold">Search Results for "{{ query }}"</h1>
-            <p class="lead text-muted">
-                {% with results.count as total_results %}
-                    Found {{ total_results }} result{{ total_results|pluralize }}
-                {% endwith %}
-            </p>
-        </div>
 
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                {% for post in results %}
-                    <div class="card mb-3 shadow-sm border-0">
-                        <div class="card-body">
-                            <h4 class="card-title mb-3">
-                                <a href="{{ post.get_absolute_url }}" class="text-decoration-none text-dark fw-semibold">{{ post.title }}</a>
-                            </h4>
-                            <div class="card-text text-muted">
-                                {{ post.body|markdown|truncatewords_html:12 }}
-                            </div>
-                            <a href="{{ post.get_absolute_url }}" class="btn btn-outline-primary btn-sm mt-2">Read More</a>
-                        </div>
-                    </div>
-                {% empty %}
-                    <div class="alert alert-info text-center" role="alert">
-                        <h4 class="alert-heading">No Results Found</h4>
-                        <p>No posts found for "{{ query }}". Try a different search term.</p>
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
+{% if query %}
+  <h1 class="page-heading">Results for "{{ query }}"</h1>
+  <p style="color:#6b7280; font-size:0.9rem; margin-bottom:1.5rem;">
+    {% with results.count as total %}
+      {{ total }} article{{ total|pluralize }} found
+    {% endwith %}
+  </p>
 
-        <div class="text-center mt-4">
-            <a href="{% url 'blog:post_search' %}" class="btn btn-primary">Search Again</a>
-        </div>
-    {% else %}
-        <div class="row justify-content-center">
-            <div class="col-lg-6">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body">
-                        <h1 class="card-title text-center mb-4 fw-bold">Search Posts</h1>
-                        <form method="get" class="d-flex flex-column gap-3">
-                            {{ form.as_p }}
-                            <button type="submit" class="btn btn-primary w-100">Search</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    {% endif %}
-</div>
+  {% for post in results %}
+    <div class="post-card">
+      <h2 class="mb-2">
+        <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+      </h2>
+      <div class="post-meta mb-2">
+        <i class="bi bi-calendar3"></i> {{ post.publish|date:"F j, Y" }}
+        &nbsp;·&nbsp;
+        <i class="bi bi-person"></i> <strong>{{ post.author }}</strong>
+      </div>
+      <p class="post-excerpt">{{ post.body|markdown|truncatewords_html:20 }}</p>
+      <a href="{{ post.get_absolute_url }}" class="btn-read-more">Read Article →</a>
+    </div>
+  {% empty %}
+    <div class="post-card" style="text-align:center; padding:3rem;">
+      <i class="bi bi-search" style="font-size:2.5rem; color:#d1d5db;"></i>
+      <p style="color:#6b7280; margin-top:1rem;">No articles found for "{{ query }}". Try a different term.</p>
+      <a href="{% url 'blog:post_search' %}" class="btn-read-more" style="display:inline-block; margin-top:0.5rem;">Search Again</a>
+    </div>
+  {% endfor %}
 
-<style>
-body {
-    background-color: #f8f9fa;
-}
-.card {
-    transition: transform 0.2s;
-}
-.card:hover {
-    transform: translateY(-5px);
-}
-.btn-primary {
-    background-color: #007bff;
-    border-color: #007bff;
-}
-.btn-primary:hover {
-    background-color: #0056b3;
-    border-color: #0056b3;
-}
-</style>
+{% else %}
+  <h1 class="page-heading">Search Articles</h1>
+  <div class="post-card" style="max-width:520px;">
+    <p style="color:#6b7280; font-size:0.95rem; margin-bottom:1.2rem;">Search through all articles on psychology, power, strategy, and self-mastery.</p>
+    <form method="get" class="d-flex gap-2">
+      {{ form.as_p }}
+      <button type="submit" class="btn-read-more" style="height:fit-content; align-self:flex-end;">Search</button>
+    </form>
+  </div>
+{% endif %}
+
 {% endblock %}

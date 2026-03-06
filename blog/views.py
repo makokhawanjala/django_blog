@@ -39,7 +39,7 @@ def post_list(request, tag_slug=None):
         # If page is out of range (e.g. 9999), deliver last page of results.
         posts = paginator.page(paginator.num_pages)
     return render(request, 'blog/post/list.html', {'posts': posts, 'page': page_number, 'tag': tag}) 
-    return render(request, 'blog/post/list.html', {'posts': posts, 'page': posts, 'tag': tag}) 
+    # return render(request, 'blog/post/list.html', {'posts': posts, 'page': posts, 'tag': tag}) 
 def post_detail(request, year, month, day, post):
     post = get_object_or_404(
         Post,

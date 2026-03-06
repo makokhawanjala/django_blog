@@ -6,77 +6,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}My Blog{% endblock %}</title>
-    
+    <title>{% block title %}Dark Psychology{% endblock %}</title>
+
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link href="{% static 'css/blog.css' %}" rel="stylesheet">
 
-    <!-- Meta Description for SEO -->
-    <meta name="description" content="A blog by Amos Makokha sharing programming projects, ideas, solutions, and updates.">
+    <meta name="description" content="Amos Makokha — psychology, strategy, and the hidden rules of power.">
 </head>
-<body class="bg-light text-dark d-flex flex-column min-vh-100">
+<body class="d-flex flex-column min-vh-100">
 
-  <!-- Header / Navigation -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
-      <div class="container">
-          <a class="navbar-brand fw-bold" href="{% url 'blog:post_list' %}">Amos Makokha Blog</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-              <span class="navbar-toggler-icon"></span>
-          </button>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark mb-4">
+      <div class="container d-flex align-items-center justify-content-between">
+          <a class="navbar-brand" href="{% url 'blog:post_list' %}">
+              <i class="bi bi-pen-fill me-2"></i>Dark Psychology
+          </a>
+          <form class="navbar-search d-flex" method="get" action="{% url 'blog:post_search' %}">
+              <input type="text" name="query" placeholder="Search articles…" autocomplete="off">
+              <button type="submit"><i class="bi bi-search"></i></button>
+          </form>
       </div>
   </nav>
 
-  <!-- Main Content Area -->
+  <!-- Main Content -->
   <main class="flex-grow-1">
     <div class="container">
         <div class="row">
-            <!-- Main content column (left) -->
+            <!-- Main column -->
             <div class="col-md-8">
-                {% block content %}
-                {% endblock %}
+                {% block content %}{% endblock %}
             </div>
 
-            <!-- Sidebar column (right) -->
+            <!-- Sidebar -->
             <div class="col-md-4">
-                <!-- About This Blog section -->
-                <div class="p-4 mb-4 bg-white border rounded shadow-sm">
-                    <h4 class="fw-bold text-primary mb-3">👨‍💻 About This Blog</h4>
-                    <p class="mb-2">Hi there! I'm <strong>Amos Makokha</strong>, and this is my personal programming blog where I:</p>
-                    <ul class="list-unstyled ps-3">
-                        <li class="mb-1"><i class="bi bi-lightbulb-fill text-warning"></i> Share project ideas & walkthroughs</li>
-                        <li class="mb-1"><i class="bi bi-bug-fill text-danger"></i> Fix errors & provide debugging tips</li>
-                        <li class="mb-1"><i class="bi bi-tools text-success"></i> Explore tools, libraries & updates</li>
-                        <li class="mb-1"><i class="bi bi-journal-text text-info"></i> Publish personal dev notes</li>
+
+                <!-- About -->
+                <div class="sidebar-card">
+                    <h4><i class="bi bi-person-fill me-1"></i> About This Blog</h4>
+                    <p>I'm <strong>Amos Makokha</strong> — I write about the psychology of power, influence, and self-mastery. Lessons drawn from Machiavelli, dark psychology, and real human behavior.</p>
+                    <ul class="list-unstyled mb-2">
+                        <li class="py-1 border-bottom"><i class="bi bi-lightning-fill text-warning me-2"></i>Psychology of power & influence</li>
+                        <li class="py-1 border-bottom"><i class="bi bi-shield-fill text-primary me-2"></i>Protecting yourself from manipulation</li>
+                        <li class="py-1 border-bottom"><i class="bi bi-activity text-danger me-2"></i>Emotional mastery & self-control</li>
+                        <li class="py-1"><i class="bi bi-book-fill text-success me-2"></i>Strategy & hidden wisdom</li>
                     </ul>
-                    <p class="mb-0">I've been coding since 2018, and this blog is my way of sharing real programming experiences. I've written {% total_posts %} posts so far. </p>   
+                    <p class="mb-0" style="font-size:0.85rem; color:#6b7280;">{% total_posts %} articles published so far.</p>
                 </div>
-                
-                <!-- Latest Posts section -->
-                <div class="p-4 mb-4 bg-white border rounded shadow-sm">
-                    <h4 class="fw-bold text-primary mb-3">📰 Latest Posts</h4>
+
+                <!-- Latest Posts -->
+                <div class="sidebar-card">
+                    <h4><i class="bi bi-clock-fill me-1"></i> Latest Posts</h4>
                     {% show_latest_posts %}
                 </div>
+
             </div>
         </div>
     </div>
   </main>
 
-  <!-- Sticky Footer -->
-  <footer class="bg-dark text-white mt-auto py-4">
+  <!-- Footer -->
+  <footer class="mt-auto py-4">
       <div class="container text-center">
           <p class="mb-1">© {% now "Y" %} Amos Makokha. All rights reserved.</p>
           <p class="mb-0">
-              Contact: <a href="mailto:amosmakokha084@gmail.com" class="text-white text-decoration-none">amosmakokha084@gmail.com</a> |
-              Phone: +254 740 231 657
+              <a href="mailto:amosmakokha084@gmail.com"><i class="bi bi-envelope-fill me-1"></i>amosmakokha084@gmail.com</a>
+              &nbsp;|&nbsp;
+              <a href="tel:+254740231657"><i class="bi bi-telephone-fill me-1"></i>+254 740 231 657</a>
           </p>
-          <small class="d-block mt-2">Sharing real programming experiences — projects, errors, and insights.</small>
+          <small class="d-block mt-2">Psychology · Strategy · Power · Self-Mastery</small>
       </div>
   </footer>
 
-  <!-- Bootstrap JS Bundle -->
+  <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   {% block extra_scripts %}{% endblock %}
 
