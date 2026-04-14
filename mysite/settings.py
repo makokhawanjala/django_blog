@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
     'taggit',
     'blog',
+    'automation',
 ]
 
 MIDDLEWARE = [
@@ -73,10 +74,16 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
+
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -87,3 +94,29 @@ CSRF_TRUSTED_ORIGINS = config(
 )
 
 SITE_ID = 1
+# ── Automation settings ───────────────────────────────────────────────────────
+ANTHROPIC_API_KEY = config('ANTHROPIC_API_KEY', default='')
+YOUTUBE_API_KEY = config('YOUTUBE_API_KEY', default='')
+REDDIT_CLIENT_ID = config('REDDIT_CLIENT_ID', default='')
+REDDIT_CLIENT_SECRET = config('REDDIT_CLIENT_SECRET', default='')
+REDDIT_USER_AGENT = config('REDDIT_USER_AGENT', default='machiavellimind_monitor/1.0')
+GOOGLE_ANALYTICS_PROPERTY_ID = config('GOOGLE_ANALYTICS_PROPERTY_ID', default='')
+BLOG_AUTHOR_ID = config('BLOG_AUTHOR_ID', default=1, cast=int)
+MONITORED_CHANNELS = config('MONITORED_CHANNELS', default='', cast=Csv())
+NOTIFICATION_EMAIL = config('NOTIFICATION_EMAIL', default='')
+
+# AWS / Bedrock
+AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID', default='')
+AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY', default='')
+AWS_DEFAULT_REGION = config('AWS_DEFAULT_REGION', default='us-east-1')
+
+# ── Email ─────────────────────────────────────────────────────────────────────
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
+EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+
+WEBSHARE_PROXY_USERNAME = config('WEBSHARE_PROXY_USERNAME', default='')
+WEBSHARE_PROXY_PASSWORD = config('WEBSHARE_PROXY_PASSWORD', default='')
