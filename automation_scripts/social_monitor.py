@@ -10,42 +10,74 @@ logger = logging.getLogger(__name__)
 
 def fetch_reddit_posts(limit_per_sub: int = 25) -> list[dict]:
     """
-    Fetches hot and new posts from target subreddits matching relevance keywords.
+    Fetches hot, new, and top posts from target subreddits matching relevance keywords.
     Uses Reddit's public JSON API — no API key or PRAW required.
     Returns list of {platform, post_url, post_text, author, engagement_count}
     """
     results = []
+    seen_urls = set()  # deduplicate posts that appear in multiple listings
     keyword_set = {k.lower() for k in RELEVANCE_KEYWORDS}
     headers = {'User-Agent': REDDIT_USER_AGENT}
 
     for subreddit_name in TARGET_SUBREDDITS:
-        for listing in ('hot', 'new'):
-            url = f'https://www.reddit.com/r/{subreddit_name}/{listing}.json?limit={limit_per_sub}'
+        # 'top' uses ?t=week to get the past 7 days of top posts
+        for listing in ('hot', 'new', 'top'):
+            time_filter = '&t=week' if listing == 'top' else ''
+            url = (
+                f'https://www.reddit.com/r/{subreddit_name}/{listing}.json'
+                f'?limit={limit_per_sub}{time_filter}'
+            )
             try:
                 response = requests.get(url, headers=headers, timeout=10)
+                if response.status_code == 404:
+                    logger.warning(f'r/{subreddit_name} not found — skipping')
+                    break  # skip all listings for this subreddit
                 if response.status_code != 200:
-                    logger.warning(f'Reddit public API returned {response.status_code} for r/{subreddit_name}/{listing}')
+                    logger.warning(
+                        f'Reddit public API returned {response.status_code} '
+                        f'for r/{subreddit_name}/{listing}'
+                    )
                     continue
+
                 data = response.json()
                 for child in data.get('data', {}).get('children', []):
                     post = child.get('data', {})
+
+                    # Skip deleted/removed posts
+                    if post.get('removed_by_category') or post.get('selftext') == '[removed]':
+                        continue
+
                     score = post.get('score', 0)
                     if score < MIN_ENGAGEMENT_REDDIT:
                         continue
-                    text = f'{post.get("title", "")} {post.get("selftext", "")}'.lower()
 
                     import time
                     created_utc = post.get('created_utc', 0)
-                    if (time.time() - created_utc) > 86400:
+
+                    # Extended window: 72 hours for hot/new, 7 days for top
+                    max_age = 604800 if listing == 'top' else 259200
+                    if (time.time() - created_utc) > max_age:
                         continue
-                    if any(kw in text for kw in keyword_set):
-                        results.append({
-                            'platform': 'reddit',
-                            'post_url': f'https://reddit.com{post.get("permalink", "")}',
-                            'post_text': f'{post.get("title", "")}\n\n{post.get("selftext", "")[:500]}',
-                            'author': post.get('author', ''),
-                            'engagement_count': score,
-                        })
+
+                    text = f'{post.get("title", "")} {post.get("selftext", "")}'.lower()
+                    if not any(kw in text for kw in keyword_set):
+                        continue
+
+                    post_url = f'https://reddit.com{post.get("permalink", "")}'
+                    if post_url in seen_urls:
+                        continue
+                    seen_urls.add(post_url)
+
+                    results.append({
+                        'platform': 'reddit',
+                        'post_url': post_url,
+                        'post_text': (
+                            f'{post.get("title", "")}\n\n'
+                            f'{post.get("selftext", "")[:500]}'
+                        ),
+                        'author': post.get('author', ''),
+                        'engagement_count': score,
+                    })
 
             except Exception as e:
                 logger.error(f'Reddit fetch error for r/{subreddit_name}/{listing}: {e}')
